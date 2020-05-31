@@ -5,8 +5,9 @@ const bodyparser = require('body-parser');
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 const dbConfig = require("./config.js");
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+app.use(express.static("public"))
 
 const connection = mysql.createConnection({
   host: dbConfig.HOST,
@@ -108,9 +109,9 @@ function verifyToken(req, res, next){
   }
 }
 
-
-const server = app.listen(8000, function () {
-  console.log("listening to port 8000....");
+const port = process.env.PORT||8000;
+const server = app.listen(port, function () {
+  console.log(`listening to the port ${port}`);
 });
 
 module.exports = connection;

@@ -25,19 +25,25 @@ connection.connect(error => {
 
 // user register
 app.post('/register', async (req, res) => {
-  const hashPassword = await bcrypt.hash(req.body.password,10)
-  let values = [];
-  values.push([
-    req.body.username,
-    hashPassword,
-    req.body.email,
-    req.body.address
-  ]);
-  let que = `insert into userlogin(username, password, email, address) values ? `;
-  connection.query(que, [values], (err, result) => {
-    if (err) throw err;
-    res.status(201).send(`"message": "new user created"`);
-  });
+  if(req.body.username !== "" && req.body.password !== "" && req.body.email !== "" && req.body.address !== ""){
+
+    const hashPassword = await bcrypt.hash(req.body.password,10)
+    let values = [];
+    values.push([
+      req.body.username,
+      hashPassword,
+      req.body.email,
+      req.body.address
+    ]);
+    let que = `insert into userlogin(username, password, email, address) values ? `;
+    connection.query(que, [values], (err, result) => {
+      if (err) throw err;
+      res.status(201).send(`"message": "new user created"`);
+    });
+  }else{
+    res.sendStatus(400)
+  }
+ 
 });
 
 // user login
@@ -72,8 +78,9 @@ app.post('/login', async (req, res) =>{
 
 // post articles
 app.post('/articles', verifyToken , (req, res) => {
-  let values = [];
-  values.push([
+  if(req.body.title !== "" && req.body.body !== "" && req.body.author !== "" ){
+    let values = [];
+    values.push([
     req.body.title,
     req.body.body,
     req.body.author
@@ -83,6 +90,10 @@ app.post('/articles', verifyToken , (req, res) => {
     if (err) throw err;
     res.status(201).send(`"message": "new article created"`);
   });
+  }else{
+    res.sendStatus(400)
+  }
+  
 });
 
 // get all articles
